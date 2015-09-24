@@ -41,24 +41,31 @@ public class Account implements Serializable{
 	
 	/*@ ensures \result == name;
 	 */
-	public /*@ pure @*/ String getName(){return this.name;}
+	public /*@ pure non_null@*/ String getName(){return this.name;}
 
 	/*@ ensures \result == password;
 	 */
-	public /*@ pure @*/ String getPassword(){return this.password;}
+	public /*@ pure non_null@*/ String getPassword(){return this.password;}
 	
 	/*@ ensures \result == balance;
 	 */
-	public /*@ pure @*/ int getBalance(){return this.balance;}
+	public /*@ pure non_null@*/ int getBalance(){return this.balance;}
 	
 	/*@ ensures \result == id;
 	 */
-	public /*@ pure @*/ int getId(){return this.id;}
+	public /*@ pure non_null@*/ int getId(){return this.id;}
 	
 	/*@ensures
 	@ \result == b >= 0;
 	@*/
-	public /*@ pure @*/ boolean csetBalance(int b){return b >= 0;}
+	public /*@ pure non_null@*/ boolean csetBalance(int b){return b >= 0;}
+	
+	/*@ ensures
+	 	\result == n >=  0;
+	*/
+	public /*@ pure @*/ boolean cremove(int n){return n > 0;}
+
+
 	
 	
 	/*@ ensures 
@@ -132,5 +139,50 @@ public class Account implements Serializable{
 	public void setId(int n){this.id = n;}
 
 
+	
+
+	/*@ requires n > 0; 
+	 ensures 
+	@ getName() == \old(getName());
+	@ also
+	@ ensures 
+	@ getPassword() == \old(getPassword());
+	@ also
+	@ requires n > 0; 
+	@ ensures 
+	@ getBalance() == \old(getBalance()) + n;
+	@ also
+	@ ensures 
+	@ getId() == \old(getId());
+	@*/
+	public void add(int n){
+		if(n > 0) this.balance = this.balance + n;
+	}
+	
+	
+	/*@ requires cremove(n);
+	@ ensures 
+	@ getName() == \old(getName());
+	@ also
+	@ requires cremove(n);
+	@ ensures 
+	@ getPassword() == \old(getPassword());
+	@ also
+	@ requires cremove(n);
+	@ ensures 
+	@(
+	@ getBalance() == \old((getBalance() - n)));
+	@ also
+	@ requires cremove(n);
+	@ ensures 
+	@ getId() == \old(getId());
+	*/
+	public void remove(int n){
+		if(cremove(n)){
+			this.balance = this.balance - n;
+		}
+	}
+	
+	
 
 }//end of class
