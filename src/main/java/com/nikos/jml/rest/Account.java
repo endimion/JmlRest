@@ -1,11 +1,14 @@
-package model;
+package com.nikos.jml.rest;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
 @XmlRootElement(name = "account")
+@XmlAccessorType(XmlAccessType.PROPERTY) // this annotation is required because the class defines methods other than the standar BEAN get/set methods
 public class Account implements Serializable{
 
 
@@ -13,6 +16,7 @@ public class Account implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -4415783730304744651L;
+	
 	private /*@spec_public non_null @*/ String name;
 	private /*@spec_public non_null @*/ String password;
 	private /*@spec_public non_null @*/ int balance;
@@ -36,7 +40,9 @@ public class Account implements Serializable{
 		this.balance = 0;
 		this.id = -1;
 	}//end of constructor
-	
+
+	//empty constructor required for the deserialization of the class by JAXB
+	public Account(){}
 	
 	
 	/*@ ensures \result == name;
@@ -47,6 +53,7 @@ public class Account implements Serializable{
 	 */
 	public /*@ pure non_null@*/ String getPassword(){return this.password;}
 	
+
 	/*@ ensures \result == balance;
 	 */
 	public /*@ pure non_null@*/ int getBalance(){return this.balance;}

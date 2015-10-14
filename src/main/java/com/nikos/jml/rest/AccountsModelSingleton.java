@@ -1,13 +1,11 @@
-package model;
+package com.nikos.jml.rest;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
+
 
 /*
  * A singleton in Java is a class for which only one instance can be created provides a global point of access this instance. 
@@ -21,7 +19,7 @@ public enum  AccountsModelSingleton {
 	
 	private AccountModel accountsMod ;
 	private DbHelper dbh;
-	
+	private Account[] dbAccounts;
 	
 	
 	private AccountsModelSingleton(){
@@ -32,14 +30,43 @@ public enum  AccountsModelSingleton {
 			int accNum = dbh.getNumberOfAccounts(); //get the number of accounts already in the database
 			accountsMod.setMaxSize(accNum); // intialize the size of the array in the accounts modelobject
 			
+			dbAccounts = dbh.getAccountsAsArray();
+			
+			//we retrieve the existing accounts from the database and add them to our model of accounts
+			for(Account ac : dbAccounts){
+				if(ac != null)
+				accountsMod.addAccount(ac.getBalance(),ac.getId(), ac.getName(),ac.getPassword());
+			}//end of looping through the accounts of the database
+			
 			
 		} catch (SQLException e) {		e.printStackTrace();	}
 	}//end of constructor of the signleton
 	
 	
+	
+	/**
+	 * 
+	 * @return the AccountModel object of the system
+	 */
 	public AccountModel getAccountsModel(){
 		return accountsMod;
 	}//end of getAccountsModel
+	
+	
+	
+	/**
+	 * 
+	 * @return an account array containing all the accounts found in the database
+	 * at intilization
+	 */
+	public  Account[] getDbAccounts(){
+		dbAccounts = new Account[accountsMod.maxAccounts()];
+		for(int i =0 ; i < accountsMod.maxAccounts(); i++){
+			dbAccounts[i] = accountsMod.getAccount(i);
+		}
+		
+		return dbAccounts;
+	}
 	
 	
 	
@@ -138,7 +165,7 @@ public enum  AccountsModelSingleton {
 							String name = rs.getString("UserName");
 							String pass = rs.getString("Pass");
 							int balance = rs.getInt("Balance");
-							accountsMod.addAccount(id, balance, name, pass);
+							accountsMod.addAccount(balance, id, name,pass);
 						}//end of looping through the elements of the resultset
 						
 					}catch(Exception e){e.printStackTrace();}

@@ -1,4 +1,4 @@
-package model;
+package com.nikos.jml.rest;
 
 
 public class AccountModel {
@@ -156,6 +156,34 @@ public class AccountModel {
 			}
 		}
 	}//end of addAccount
+	
+	
+	/*@  
+	 requires csetMaxSize(n);  
+	 ensures (\forall  int id; 
+		getAccount(id).getName() ==\old(getAccount(id).getName())  && 
+   	getAccount(id).getPassword() ==\old(getAccount(id).getPassword())  && 
+		getAccount(id).getBalance() ==\old(getAccount(id).getBalance())  && 
+		getAccount(id).getId() ==\old(getAccount(id).getId()) );
+	 also 
+	 requires csetMaxSize(n);
+	 ensures 
+	( maxAccounts() == n);
+	*/
+	public void setMaxSize(int n){
+		if(accounts.length == 0 && n > 0){
+			accounts = new Account[n];
+			/*@ loop_invariant accounts!= null ==> 
+			         (\forall int j; (j >= 0 && j < i )
+			          ==> accounts[j] == null);
+			        decreasing accounts.length-i;
+			 */
+			 for(int i = 0; i < accounts.length; i++){
+				if(i >=0)accounts[i] = null;
+			}
+		}
+	}//end of setMaxSize
+	
 	
 	
 }//end of class

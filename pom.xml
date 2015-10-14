@@ -3,9 +3,7 @@
   <groupId>com.nikos.jml.rest</groupId>
   <artifactId>JmlRest</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  
-  
-  
+    
   <repositories>
 	        <repository>
 	            <id>maven2-repository.java.net</id>
@@ -13,16 +11,17 @@
 	            <url>http://download.java.net/maven/2/</url>
 	            <layout>default</layout>
 	        </repository>
-  </repositories>
+	    </repositories>
   
   
-  <dependencies>
+   <dependencies>
 	  
 	 <dependency>
 		<groupId>javax.xml.bind</groupId>
 		<artifactId>jaxb-api</artifactId>
 		<version>2.1</version>
 	</dependency>
+	
 	
 	<dependency>
    		 <groupId>org.glassfish.jersey.containers</groupId>
@@ -43,6 +42,7 @@
     	<version>1.0</version>
 	</dependency>
 	
+
 	<!--  the following is required for using JSON objects as POJOs -->
 	<dependency>
 		<groupId>org.glassfish.jersey.media</groupId>

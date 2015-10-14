@@ -1,4 +1,4 @@
-package model;
+package com.nikos.jml.rest;
 
 
 public class AccountModel_old {
