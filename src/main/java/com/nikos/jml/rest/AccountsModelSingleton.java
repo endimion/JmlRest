@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import model.Account;
+import model.AccountModel;
+
 
 /*
  * A singleton in Java is a class for which only one instance can be created provides a global point of access this instance. 

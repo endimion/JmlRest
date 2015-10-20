@@ -1,4 +1,5 @@
-package com.nikos.jml.rest;
+package model;
+
 
 
 public class AccountModel {
@@ -64,14 +65,15 @@ public class AccountModel {
 	}
 
 	
-	/*@
-	  ensures
-	 \result == (n > 0  &&  ((getAccount(id1).getPassword()  ==  s2)  
-	 &&  ((getAccount(id1).getName()  ==  s1)  &&  (getAccount(id1)  !=  acc &&  ((getAccount(id2)  !=  acc ))))) );
+	/*@ensures
+	@ \result == (n > 0  &&  ((getAccount(id1).getPassword().equals(s2) ) 
+					&&  ((getAccount(id1).getName().equals(s1))  &&  (!((getAccount(id1)  ==  acc))  
+					&&  (!((getAccount(id2)  ==  acc))  &&  (n <= getAccount(id1).getBalance()) ) ))) );
 	*/
 	public /*@ pure @*/ boolean cdeposit(String s1, String s2, int id1, int id2, int n){
 		if(getAccount(id1) != acc && getAccount(id2) != acc){
-			if(getAccount(id1).getPassword()  ==  s2 && getAccount(id1).getName()  ==  s1 && n > 0 )
+			if(getAccount(id1).getPassword().equals(s2) && getAccount(id1).getName().equals(s1) && n > 0
+					&& n <= getAccount(id1).getBalance())
 				return true;
 			else{
 				return false;
@@ -130,20 +132,20 @@ public class AccountModel {
 	
 
 		
-	/* @ requires   b >= 0 && maxAccounts() > 0 && pos >= maxAccounts() ;
+	/*@  requires   b >= 0 && pos >= 0 && pos >= maxAccounts() ;
 	 	ensures  maxAccounts() == pos +1 && getAccount(pos).getBalance() == b ;
 	 	also 
-	 	requires   b >= 0 && maxAccounts() > 0 && pos >= maxAccounts() ;
+	 	requires   b >= 0 && pos >= 0 && pos >= maxAccounts() ;
 	 	ensures   getAccount(pos).getName() == s1;
 	 	also 
-	 	requires   b >= 0 && maxAccounts() > 0 && pos >= maxAccounts() ;
+	 	requires   b >= 0 && pos >= 0 && pos >= maxAccounts() ;
 	 	ensures   getAccount(pos).getPassword() == s2;
 	 	also 
-	 	requires   b >= 0 && maxAccounts() > 0 && pos >= maxAccounts() ;
+	 	requires   b >= 0 && pos >= 0 && pos >= maxAccounts() ;
 	 	ensures   getAccount(pos).getId() == pos;
 	 */
 	public void addAccount(int b, int pos, /*@ non_null @*/ String s1, /*@ non_null @*/ String s2){
-		if( b >= 0 && accounts.length > 0 && pos >= maxAccounts()){
+		if( b >= 0 && accounts.length > 0 && pos >= maxAccounts() && pos >= 0){
 			resizeArray(pos+1);
 			Account account = new Account("newAc");
 			account.setBalance(b);
@@ -158,7 +160,7 @@ public class AccountModel {
 	}//end of addAccount
 	
 	
-	/*@  
+	/*@
 	 requires csetMaxSize(n);  
 	 ensures (\forall  int id; 
 		getAccount(id).getName() ==\old(getAccount(id).getName())  && 
@@ -184,6 +186,40 @@ public class AccountModel {
 		}
 	}//end of setMaxSize
 	
+	
+	
+	/*@ requires cdeposit(s1, s2, id1, id2, n);
+		ensures 
+		(\forall  int id;
+			( \old((id  ==  id2)) ==> 
+			n > 0 ==>
+		 	getAccount(id).getName()== \old(getAccount(id).getName()) &&
+		 	getAccount(id).getPassword()== \old(getAccount(id).getPassword()) &&
+		 	getAccount(id).getBalance()== \old(getAccount(id). getBalance()  + n) &&
+		 	getAccount(id).getId()== \old(getAccount(id).getId())));
+	 	also 
+	 	requires cdeposit(s1, s2, id1, id2, n);
+	 	ensures 
+	  	(\forall  int id;
+			( \old((id  ==  id1)) ==> 
+			(getAccount(id1).cremove(n) )==>
+		 	getAccount(id).getName()== \old(getAccount(id).getName()) &&
+		 	getAccount(id).getPassword()== \old(getAccount(id).getPassword()) &&
+		 	getAccount(id).getBalance()== \old(getAccount(id).getBalance() - n) &&
+		 	getAccount(id).getId()== \old(getAccount(id).getId())));
+	@*/
+	public void deposit(int id1, int id2, int n, String s1, String s2){
+		
+		//System.out.println(id1 +" " + id2+" " + n +" "+s1 + " "+s2 );
+		//System.out.println("condition " + cdeposit(s1,s2,id1,id2,n));
+		
+		if(cdeposit(s1,s2,id1,id2,n)){
+			getAccount(id1).remove(n);
+			getAccount(id2).add(n);
+		}
+		
+	}//end of deposit
+
 	
 	
 }//end of class

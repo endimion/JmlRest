@@ -1,4 +1,4 @@
-package com.nikos.jml.rest;
+package model;
 
 import java.io.Serializable;
 
@@ -68,9 +68,9 @@ public class Account implements Serializable{
 	public /*@ pure non_null@*/ boolean csetBalance(int b){return b >= 0;}
 	
 	/*@ ensures
-	 	\result == n >=  0;
+	 	\result ==  (n >=  0 && n  <=  getBalance());
 	*/
-	public /*@ pure @*/ boolean cremove(int n){return n > 0;}
+	public /*@ pure @*/ boolean cremove(int n){return (n >= 0 && n <= this.balance);}
 
 
 	
